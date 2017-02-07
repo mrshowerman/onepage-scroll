@@ -309,13 +309,19 @@
       }
     });
 
-    el.swipeEvents().bind("swipeDown",  function(event){
-      if (!$("body").hasClass("disabled-onepage-scroll")) event.preventDefault();
-      el.moveUp();
-    }).bind("swipeUp", function(event){
-      if (!$("body").hasClass("disabled-onepage-scroll")) event.preventDefault();
-      el.moveDown();
-    });
+    if(settings.direction === 'horizontal' ) {
+      el.swipeEvents().bind("swipeRight", function () {
+        el.moveUp();
+      }).bind("swipeLeft", function () {
+        el.moveDown();
+      });
+    } else {
+      el.swipeEvents().bind("swipeDown", function () {
+        el.moveUp();
+      }).bind("swipeUp", function () {
+        el.moveDown();
+      });
+    }
 
     // Create Pagination and Display Them
     if (settings.pagination == true) {
