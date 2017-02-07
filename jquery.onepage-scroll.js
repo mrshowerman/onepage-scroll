@@ -90,7 +90,8 @@
             leftPos = 0,
             lastAnimation = 0,
             quietPeriod = 500,
-            paginationList = "";
+            paginationList = "",
+            body = $('body');
 
         $.fn.transformPage = function(settings, pos, index) {
             if (typeof settings.beforeMove == 'function') settings.beforeMove(index);
@@ -98,11 +99,12 @@
             // Just a simple edit that makes use of modernizr to detect an IE8 browser and changes the transform method into
             // an top animate so IE8 users can also use this script.
             if($('html').hasClass('ie8')){
+                var toppos;
                 if (settings.direction == 'horizontal') {
-                    var toppos = (el.width()/100)*pos;
+                    toppos = (el.width()/100)*pos;
                     $(this).animate({left: toppos+'px'},settings.animationTime);
                 } else {
-                    var toppos = (el.height()/100)*pos;
+                    toppos = (el.height()/100)*pos;
                     $(this).animate({top: toppos+'px'},settings.animationTime);
                 }
             } else{
@@ -146,8 +148,8 @@
                 $(".onepage-pagination li a" + "[data-index='" + next.data("index") + "']").addClass("active");
             }
 
-            $("body")[0].className = $("body")[0].className.replace(/\bviewing-page-\d.*?\b/g, '');
-            $("body").addClass("viewing-page-"+next.data("index"))
+            body[0].className = body[0].className.replace(/\bviewing-page-\d.*?\b/g, '');
+            body.addClass("viewing-page-"+next.data("index"));
 
             if (history.replaceState && settings.updateURL == true) {
                 var href = window.location.href.substr(0,window.location.href.indexOf('#')) + "#" + (index + 1);
@@ -180,8 +182,8 @@
                 $(".onepage-pagination li a" + "[data-index='" + index + "']").removeClass("active");
                 $(".onepage-pagination li a" + "[data-index='" + next.data("index") + "']").addClass("active");
             }
-            $("body")[0].className = $("body")[0].className.replace(/\bviewing-page-\d.*?\b/g, '');
-            $("body").addClass("viewing-page-"+next.data("index"));
+            body[0].className = body[0].className.replace(/\bviewing-page-\d.*?\b/g, '');
+            body.addClass("viewing-page-"+next.data("index"));
 
             if (history.replaceState && settings.updateURL == true) {
                 var href = window.location.href.substr(0,window.location.href.indexOf('#')) + "#" + (index - 1);
@@ -191,16 +193,16 @@
         };
 
         $.fn.moveTo = function(page_index) {
-            current = $(settings.sectionContainer + ".active");
-            next = $(settings.sectionContainer + "[data-index='" + (page_index) + "']");
+            var current = $(settings.sectionContainer + ".active"),
+                next = $(settings.sectionContainer + "[data-index='" + (page_index) + "']");
             if(next.length > 0) {
                 if (typeof settings.beforeMove == 'function') settings.beforeMove(next.data("index"));
                 current.removeClass("active");
                 next.addClass("active");
                 $(".onepage-pagination li a" + ".active").removeClass("active");
                 $(".onepage-pagination li a" + "[data-index='" + (page_index) + "']").addClass("active");
-                $("body")[0].className = $("body")[0].className.replace(/\bviewing-page-\d.*?\b/g, '');
-                $("body").addClass("viewing-page-"+next.data("index"));
+                body[0].className = body[0].className.replace(/\bviewing-page-\d.*?\b/g, '');
+                body.addClass("viewing-page-"+next.data("index"));
 
                 pos = ((page_index - 1) * 100) * -1;
 
@@ -215,7 +217,7 @@
         function responsive() {
             //start modification
             var valForTest = false,
-                typeOfRF = typeof settings.responsiveFallback;
+                typeOfRF = typeof settings.responsiveFallback
 
             if(typeOfRF == "number"){
                 valForTest = $(window).width() < settings.responsiveFallback;
@@ -234,21 +236,21 @@
 
             //end modification
             if (valForTest) {
-                $("body").addClass("disabled-onepage-scroll");
+                body.addClass("disabled-onepage-scroll");
                 $(document).unbind('mousewheel DOMMouseScroll MozMousePixelScroll');
                 el.swipeEvents().unbind("swipeDown swipeUp");
             } else {
-                if($("body").hasClass("disabled-onepage-scroll")) {
-                    $("body").removeClass("disabled-onepage-scroll");
+                if(body.hasClass("disabled-onepage-scroll")) {
+                    body.removeClass("disabled-onepage-scroll");
                     $("html, body, .wrapper").animate({ scrollTop: 0 }, "fast");
                 }
 
 
                 el.swipeEvents().bind("swipeDown",  function(event){
-                    if (!$("body").hasClass("disabled-onepage-scroll")) event.preventDefault();
+                    if (!body.hasClass("disabled-onepage-scroll")) event.preventDefault();
                     el.moveUp();
                 }).bind("swipeUp", function(event){
-                    if (!$("body").hasClass("disabled-onepage-scroll")) event.preventDefault();
+                    if (!body.hasClass("disabled-onepage-scroll")) event.preventDefault();
                     el.moveDown();
                 });
 
@@ -325,7 +327,10 @@
 
         // Create Pagination and Display Them
         if (settings.pagination == true) {
-            if ($('ul.onepage-pagination').length < 1) $("<ul class='onepage-pagination'></ul>").prependTo("body");
+            var ul = $('ul.onepage-pagination');
+            if (ul.length < 1) {
+                ul = $("<ul class='onepage-pagination'></ul>").prependTo("body");
+            }
 
             if( settings.direction == 'horizontal' ) {
                 posLeft = (el.find(".onepage-pagination").width() / 2) * -1;
@@ -334,7 +339,7 @@
                 posTop = (el.find(".onepage-pagination").height() / 2) * -1;
                 el.find(".onepage-pagination").css("margin-top", posTop);
             }
-            $('ul.onepage-pagination').html(paginationList);
+            ul.html(paginationList);
         }
 
         if(window.location.hash != "" && window.location.hash != "#1") {
@@ -342,15 +347,15 @@
 
             if (parseInt(init_index) <= total && parseInt(init_index) > 0) {
                 $(settings.sectionContainer + "[data-index='" + init_index + "']").addClass("active");
-                $("body").addClass("viewing-page-"+ init_index);
+                body.addClass("viewing-page-"+ init_index);
                 if(settings.pagination == true) $(".onepage-pagination li a" + "[data-index='" + init_index + "']").addClass("active");
 
                 next = $(settings.sectionContainer + "[data-index='" + (init_index) + "']");
                 if(next) {
                     next.addClass("active");
                     if(settings.pagination == true) $(".onepage-pagination li a" + "[data-index='" + (init_index) + "']").addClass("active");
-                    $("body")[0].className = $("body")[0].className.replace(/\bviewing-page-\d.*?\b/g, '');
-                    $("body").addClass("viewing-page-"+next.data("index"));
+                    body[0].className = body[0].className.replace(/\bviewing-page-\d.*?\b/g, '');
+                    body.addClass("viewing-page-"+next.data("index"));
                     if (history.replaceState && settings.updateURL == true) {
                         var href = window.location.href.substr(0,window.location.href.indexOf('#')) + "#" + (init_index);
                         history.pushState( {}, document.title, href );
@@ -407,7 +412,7 @@
                         case 32: //spacebar
                             if (tag != 'input' && tag != 'textarea') el.moveDown();
                             break;
-                        case 33: //pageg up
+                        case 33: //page up
                             if (tag != 'input' && tag != 'textarea') el.moveUp();
                             break;
                         case 34: //page dwn
