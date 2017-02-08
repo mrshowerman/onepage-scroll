@@ -1,12 +1,9 @@
-body, html {
-  margin: 0;
+html.onepage-scroll,
+html.onepage-scroll body {
   overflow: hidden;
   -webkit-transition: opacity 400ms;
   -moz-transition: opacity 400ms;
   transition: opacity 400ms;
-}
-
-body, .onepage-wrapper, html {
   display: block;
   position: static;
   padding: 0;
@@ -90,6 +87,6 @@ body, .onepage-wrapper, html {
   display: none;
 }
 
-body.disabled-onepage-scroll, .disabled-onepage-scroll .onepage-wrapper, html {
+body.disabled-onepage-scroll, .disabled-onepage-scroll .onepage-wrapper {
   position: inherit;
 }
