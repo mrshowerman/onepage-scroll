@@ -192,7 +192,8 @@
         };
 
         $.fn.moveTo = function(page_index) {
-            var current = $(settings.sectionContainer + ".active"),
+            var el = $(this),
+                current = $(settings.sectionContainer + ".active"),
                 next = $(settings.sectionContainer + "[data-index='" + (page_index) + "']");
             if(next.length > 0) {
                 if (typeof settings.beforeMove == 'function') settings.beforeMove(next.data("index"));
